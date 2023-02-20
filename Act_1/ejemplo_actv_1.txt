@@ -1,0 +1,31 @@
+Elecciones
+1 - 25/01/2021 a 29/01/2021
+
+Colegio
+1 - Casa de Paco - 40 - 1
+2 - Casa de Rod - 40 - 1
+
+Mesa
+A - 1 - 25/01/2021 a 29/01/2021
+B - 1 - 25/01/2021 a 29/01/2021
+C - 2 - 25/01/2021 a 29/01/2021
+D - 2 - 25/01/2021 a 29/01/2021
+
+Partidos
+Güera, Pepito, Vazquez, PG, 16/09/2019 - 30/03/2022
+
+
+Votantes
+IFE01 - Jose, Rdgz, Casa de su mama, 31/02/1997, 27/01/2021, 27/01/2021, Miembro, Vocal, Federal, B, Güera
+Psp01 - Josh, Hdz, El Paso TX, 3/08/1947, 28/01/2021, 28/01/2021, NULL, NULL, Federal, A, Güera
+
+Apoderados
+IFEA01, Chuy, Moro, Güera
+
+Federal
+B - Güera, 1, 0, 0
+A - Güera, 1, 0, 0
+
+Electoral
+
+

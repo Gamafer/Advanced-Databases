@@ -1,0 +1,89 @@
+
+------------ Crear tabla elecciones ---------------------
+
+CREATE DATABASE elecciones
+
+connect to elecciones
+
+CREATE TABLE elecciones ( Num_eleccion INT NOT NULL, EInicio DATE NOT NULL, EFin DATE NOT NULL, tipo_elec VARCHAR(15), sys_ei TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW BEGIN, sys_ef TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW END, tse_id TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS TRANSACTION START ID, PERIOD SYSTEM_TIME(sys_ei, sys_ef), PERIOD BUSINESS_TIME (Einicio, EFin), PRIMARY KEY(Num_eleccion) )
+
+- checar - CREATE UNIQUE INDEX index_period_elecciones ON ELECCIONES(Num_eleccion, BUSINESS_TIME WITHOUT OVERLAPS)
+
+CREATE TABLE hist_elecciones LIKE elecciones
+
+ALTER TABLE elecciones ADD VERSIONING USE HISTORY TABLE hist_elecciones
+
+------------ Crear tabla colegio ---------------------
+
+CREATE TABLE colegio ( Num_correlativo INT NOT NULL, cant_electores INT NOT NULL, CInicio DATE NOT NULL, CFin DATE NOT NULL, Num_elec INT NOT NULL, sys_ci TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW BEGIN, sys_cf TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW END, tsc_id TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS TRANSACTION START ID, PERIOD SYSTEM_TIME(sys_ci, sys_cf), PERIOD BUSINESS_TIME (CInicio, CFin), FOREIGN KEY(Num_elec) REFERENCES elecciones(Num_eleccion) )
+
+- checar - CREATE UNIQUE INDEX index_period_colegio ON colegio(Num_correlativo, CPeriod WITHOUT OVERLAPS)
+
+CREATE TABLE hist_colegio LIKE colegio
+
+ALTER TABLE colegio ADD VERSIONING USE HISTORY TABLE hist_colegio
+
+------------ Crear tabla mesa ---------------------
+
+CREATE TABLE mesa ( Nombre_mesa VARCHAR(1) NOT NULL, MInicio DATE NOT NULL, MFin DATE NOT NULL, num_corr INT NOT NULL, PERIOD FOR MPeriod (MInicio, MFin), FOREIGN KEY(num_corr) REFERENCES elecciones(Num_correlativo) )
+ 
+- checar - CREATE UNIQUE INDEX index_period_mesa ON mesa(Nombre_mesa, MPeriod WITHOUT OVERLAPS)
+
+CREATE TABLE hist_mesa LIKE mesa
+
+ALTER TABLE mesa ADD VERSIONING USE HISTORY TABLE hist_mesa
+
+
+------------ Crear tabla Partido ---------------------
+
+CREATE TABLE partido ( Nombre_partido VARCHAR(20) NOT NULL, Nombre_pres VARCHAR(40) NOT NULL, Apellidos_pres VARCAHR(100) NOT NULL, Siglas VARCHAR(3) NOT NULL, PStart DATE NOT NULL, PEnd DATE NOT NULL, PERIOD FOR PPeriod (PStart, PEnd) )
+
+- checar - CREATE UNIQUE INDEX index_period_partido ON partido(Nombre_partido, PPeriod WITHOUT OVERLAPS)
+
+CREATE TABLE hist_partido LIKE partido
+
+ALTER TABLE partido ADD VERSIONING USE HISTORY TABLE hist_partido
+
+
+------------ Crear tabla Votantes ---------------------
+
+CREATE TABLE votantes ( IFE/Pasaporte VARCHAR(10) NOT NULL, Nombre VARCHAR(40) NOT NULL, Apellidos VARCHAR(100) NOT NULL, Direccion VARCHAR(200), Fecha_nac DATE NOT NULL, sys_start TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW BEGIN, sys_end TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW BEGIN, ts_id TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS TRANSACTION START ID, PERIOD SYSTEM_TIME (sys_start, sys_end), Miembro_Suplente VARCHAR(1), pres_voc VARCHAR(1), nom_mesa VARCHAR(1) NOT NULL )
+
+- checar - CREATE UNIQUE INDEX index_period_votantes ON votantes(IFE/Pasaporte, SYSTEM_TIME WITHOUT OVERLAPS)
+
+CREATE TABLE hist_votantes LIKE votantes
+
+ALTER TABLE votantes ADD VERSIONING USE HISTORY TABLE hist_votantes
+
+
+------------ Crear tabla Apoderado ---------------------
+
+CREATE TABLE apoderados ( IFE_ap VARCHAR(10) NOT NULL, Nombre_Ap VARCHAR(40) NOT NULL, Apellido_Ap VARCHAR(100) NOT NULL, AStart DATE NOT NULL, AFin DATE NOT NULL, PERIOD FOR APeridod (AStart, AFin),nom_partido VARCHAR(20) NOT NULL, FOREIGN KEY(nom_partido) REFERENCES partido(Nombre_partido) )
+
+- checar - CREATE UNIQUE INDEX index_period_apoderados ON apoderados(IFE_ap, APeriod WITHOUT OVERLAPS)
+
+CREATE TABLE hist_apoderados LIKE apoderados
+
+ALTER TABLE apoderados ADD VERSIONING USE HISTORY TABLE hist_apoderados
+
+------------ Crear tabla Federal ---------------------
+
+- checar - CREATE TABLE federal ( Nomb_mesa VARCHAR(1) NOT NULL, nom_partido VARCHAR(20) NOT NULL, votos_validos INT NOT NULL, votos_nulos INT NOT NULL, votos_blancos INT NOT NULL, sys_start TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW BEGIN, sys_END TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW BEGIN, ts_id TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS TRANSACTION START ID, PERIOD SYSTEM_TIME(sys_start, sys_end), PRIMARY KEY(Nomb_mesa, nom_partido) )
+
+CREATE TABLE hist_federal LIKE federal
+
+ALTER TABLE federal ADD VERSIONING USE HISTORY TABLE hist_federal
+
+
+------------ Crear tabla Electoral ---------------------
+
+- checar - CREATE TABLE electoral ( Nomb_mesa VARCHAR(1) NOT NULL, nom_partido VARCHAR(20) NOT NULL, votos_validos INT NOT NULL, votos_nulos INT NOT NULL, votos_blancos INT NOT NULL, sys_start TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW BEGIN, sys_END TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS ROW BEGIN, ts_id TIMESTAMP(12) NOT NULL GENERATED ALWAYS AS TRANSACTION START ID, PERIOD SYSTEM_TIME(sys_start, sys_end), PRIMARY KEY(Nomb_mesa, nom_partido) )
+
+CREATE TABLE hist_electoral LIKE electoral
+
+ALTER TABLE electoral ADD VERSIONING USE HISTORY TABLE hist_electoral
+
+
+docker run -itd --name testAct1 --privileged=true -p 50000:50000 -e LICENSE=accept -e DB2INST1_PASSWORD=password -e DBNAME=eleccionesdb ibmcom/db2 bash
+
+docker exec -ti testAct1 bash -c "su - db2inst1"

@@ -1,0 +1,16 @@
+Equipo: 
+Ana Paola Minchaca A01026744
+Rodrigo Benavente A01026973
+Patricio Tena A01027293
+Karen Morgado A01027446
+Francisco Acuña A01027294
+Fernando Garrote A01027503
+
+
+Este documento contiene: 
+- jpg del diagrama MRE extendido y el diagrama relacional
+- documento con los screenshots requeridos
+- script creacion base de datos: creacionTablas.sql
+- script ingresar los datos: llenarTablas.sql
+- script para updates y deletes: updates_deletes.sql
+- script de python para generar querys de votantes al azar
